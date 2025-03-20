@@ -1,0 +1,7 @@
+python-dotenv
+azure-identity
+fastapi
+uvicorn
+tiktoken
+semantic-kernel[azure]
+azure-ai-projects
