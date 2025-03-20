@@ -2,6 +2,7 @@ import asyncio
 import os
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from azure.identity import DefaultAzureCredential
 from semantic_kernel.agents.azure_ai import AzureAIAgent, AzureAIAgentSettings
@@ -19,8 +20,15 @@ PROJECT_CONNECTION_STRING = os.getenv("AZURE_AI_AGENT_PROJECT_CONNECTION_STRING"
 
 # Initialize FastAPI
 app = FastAPI()
+origins = ["*"]# Pydantic model for request validation
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  # Allow specific origins
+    allow_credentials=True,  # Allow cookies to be sent with requests
+    allow_methods=["*"],  # Allow all HTTP methods (GET, POST, etc.)
+    allow_headers=["*"],  # Allow all headers
+)
 
-# Pydantic model for request validation
 class QueryRequest(BaseModel):
     query: str
 
@@ -61,4 +69,4 @@ async def chat_with_agent(request: QueryRequest):
 # Run FastAPI using Uvicorn
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8001)
